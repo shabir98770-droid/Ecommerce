@@ -1,0 +1,108 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body { background: #f6f6f6 !important; }
+    .lux-card {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        max-width: 480px;
+        width: 100%;
+        padding: 48px 40px;
+        margin: 20px auto;
+    }
+    .lux-label {
+        font-size: 11px;
+        letter-spacing: 1.2px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        color: #111;
+    }
+    .lux-input {
+        background: #f2f2f2;
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
+        padding: 16px 18px;
+        font-size: 15px;
+        width: 100%;
+        transition: all .2s;
+    }
+    .lux-input:focus {
+        outline: none;
+        background: #fff;
+        border-color: #000;
+        box-shadow: none;
+    }
+    .lux-btn {
+        background: #0a0a0a;
+        color: white;
+        border-radius: 14px;
+        padding: 18px;
+        width: 100%;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        margin-top: 12px;
+        transition: .2s;
+    }
+    .lux-btn:hover { background: #000; color: white; transform: translateY(-1px); }
+    .brand { font-family: serif; font-size: 22px; letter-spacing: -0.5px; font-weight:900; }
+    
+    @@media (max-width: 576px) {
+        .lux-card { padding: 28px 22px !important; border-radius: 22px !important; margin: 10px 14px !important; }
+        .lux-input { padding: 14px 16px !important; font-size: 14px !important; }
+        .lux-btn { padding: 16px !important; font-size: 15px !important; }
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center px-2" style="min-height:75vh; overflow-x:hidden;">
+    <div class="lux-card">
+        <div class="text-center mb-4 mb-lg-5">
+            <div class="brand mb-3">ECOMMERCE.</div>
+            <h2 class="fw-bold" style="font-size:28px; letter-spacing:-0.5px;">Create your account</h2>
+            <p class="text-muted small mt-2">Join us to start shopping</p>
+        </div>
+
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <div class="lux-label">Email</div>
+                <input asp-for="Input.Email" class="lux-input" placeholder="name@example.com" autocomplete="username" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <div class="lux-label">Password</div>
+                <input asp-for="Input.Password" class="lux-input" placeholder="••••••••" autocomplete="new-password" />
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-2">
+                <div class="lux-label">Confirm Password</div>
+                <input asp-for="Input.ConfirmPassword" class="lux-input" placeholder="••••••••" autocomplete="new-password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="lux-btn">Create account</button>
+
+            <div class="text-center mt-4" style="font-size:14px;">
+                Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-dark fw-bold" style="text-decoration:underline; text-underline-offset:4px;">Log in</a>
+            </div>
+
+            <div class="text-center text-muted mt-4" style="font-size:11px; line-height:1.5;">
+                By creating an account, you agree to our Terms & Privacy Policy
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

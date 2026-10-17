@@ -1,0 +1,79 @@
+﻿@model Ecommerce.Models.Order
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice #@Model.Id</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+        .invoice-box { background: white; max-width: 800px; margin: auto; }
+        @@media print { .no-print { display:none !important; } body { background: white; } }
+    </style>
+</head>
+<body class="p-2 p-md-4">
+    <div class="invoice-box border rounded-4 p-4 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+            <div>
+                <h3 class="fw-bold mb-0"><i class="fa-solid fa-store me-2"></i>My Ecommerce</h3>
+                <small class="text-muted">Ecommerce Store - Islamabad</small>
+            </div>
+            <div class="text-end">
+                <h5 class="fw-bold mb-0">INVOICE</h5>
+                <small>#@Model.Id</small>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-6">
+                <h6 class="fw-bold">Billed To:</h6>
+                <p class="small mb-1"><b>@Model.CustomerName</b></p>
+                <p class="small mb-1">@Model.Phone</p>
+                <p class="small mb-1">@Model.Address</p>
+            </div>
+            <div class="col-6 text-end">
+                <p class="small mb-1">Date: <b>@Model.OrderDate.ToString("dd-MMM-yyyy hh:mm tt")</b></p>
+                <p class="small mb-1">Payment: <b>@Model.PaymentMethod</b></p>
+                <p class="small mb-1">Status: <span class="badge bg-success">@Model.Status</span></p>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr><th>Product</th><th class="text-center">Qty</th><th class="text-end">Price</th><th class="text-end">Total</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>@item.Product?.Name</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">Rs. @item.Price.ToString("N0")</td>
+                        <td class="text-end">Rs. @((item.Quantity * item.Price).ToString("N0"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h5 class="fw-bold">Grand Total: Rs. @Model.TotalAmount.ToString("N0")</h5>
+            <p class="small text-muted">10% Discount Applied</p>
+        </div>
+
+        <div class="text-center border-top pt-4 mt-4">
+            <p class="small text-muted">Thank you for shopping with us!</p>
+        </div>
+
+        <div class="text-center mt-4 no-print d-grid gap-2">
+            <button onclick="window.print()" class="btn btn-dark py-3 rounded-3 fw-bold">
+                <i class="fa-solid fa-download me-2"></i> Download / Print PDF
+            </button>
+            <a asp-action="Success" asp-route-id="@Model.Id" class="btn btn-outline-secondary rounded-3">Back to Success Page</a>
+        </div>
+    </div>
+</body>
+</html>

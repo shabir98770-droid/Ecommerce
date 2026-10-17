@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Ecommerce.Models.Cart>
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<style>
+    .cart-card { border: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.07); border-radius: 18px; background:#fff; }
+    .qty-btn { width: 34px; height: 34px; border-radius: 10px; border:1px solid #dee2e6; background:#fff; display:flex; align-items:center; justify-content:center; text-decoration:none; color:#000; font-weight:700; }
+    .qty-btn:hover { background:#000; color:#fff; }
+    .product-img { width: 88px; height: 88px; background:#f6f7f9; border-radius:14px; padding:8px; flex-shrink:0; }
+    
+    /* MOBILE FIX */
+    @@media (max-width: 576px) {
+        .cart-item { flex-direction: column !important; align-items: flex-start !important; gap: 12px; }
+        .cart-item-right { width: 100% !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; min-width: auto !important; }
+        .product-img { width: 72px; height: 72px; }
+    }
+</style>
+
+<div class="container py-4" style="overflow-x:hidden;">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h4 class="fw-bold mb-0">Shopping Cart <span class="text-muted fw-normal" style="font-size:14px;">(@Model.Count() items)</span></h4>
+        <a asp-controller="Home" asp-action="Index" class="text-decoration-none small fw-bold text-dark"><i class="fa-solid fa-arrow-left me-1"></i> Continue Shopping</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="cart-card p-3 p-md-4">
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5"><i class="fa-solid fa-cart-shopping fa-2x text-muted mb-3"></i><h5>Your cart is empty</h5><a asp-controller="Home" asp-action="Index" class="btn btn-dark mt-3 rounded-3 px-4">Start Shopping</a></div>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        var imgPath = item.Product!.Image ?? "";
+                        if (!imgPath.StartsWith("/") && !imgPath.StartsWith("http")) { imgPath = "/" + imgPath.TrimStart('~','/'); }
+
+                        <div class="d-flex py-3 border-bottom align-items-center cart-item">
+                            <div class="d-flex align-items-center flex-grow-1 w-100">
+                                <div class="product-img me-3"><img src="@Url.Content(imgPath)" class="w-100 h-100" style="object-fit:contain" onerror="this.src='https://placehold.co/100x100?text=No+Image'" /></div>
+                                <div class="flex-grow-1" style="min-width:0;">
+                                    <h6 class="fw-semibold mb-1 text-truncate" style="font-size:14px; max-width:200px;">@item.Product!.Name</h6>
+                                    <span class="badge bg-light text-dark border fw-normal" style="font-size:10px;">@item.Product!.Category</span>
+                                    <span class="text-success ms-2" style="font-size:11px;">In Stock</span>
+                                    <div class="mt-1"><a asp-action="Remove" asp-route-id="@item.Id" class="text-danger text-decoration-none" style="font-size:12px; font-weight:600;"><i class="fa-regular fa-trash-can me-1"></i>Remove</a></div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-2 ms-2 cart-item-right" style="min-width:130px;">
+                                <div class="d-flex align-items-center gap-2 border rounded-3 px-2 py-1">
+                                    <a asp-action="Decrease" asp-route-id="@item.Id" class="qty-btn">-</a>
+                                    <span class="fw-bold small px-2">@item.Quantity</span>
+                                    <a asp-action="Increase" asp-route-id="@item.Id" class="qty-btn">+</a>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold" style="font-size:14px;">Rs. @((item.Product!.Price * item.Quantity).ToString("N0"))</div>
+                                    <small class="text-muted" style="font-size:11px;">Rs. @item.Product!.Price.ToString("N0") each</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="cart-card p-4" style="position:sticky; top:90px;">
+                <h6 class="fw-bold mb-3">Order Summary</h6>
+                <div class="d-flex justify-content-between mb-2 small">
+                    <span class="text-muted">Subtotal (@Model.Count() items)</span>
+                    <span class="fw-semibold">Rs. @Convert.ToDecimal(ViewBag.Subtotal ?? ViewBag.Total ?? 0).ToString("N0")</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 small">
+                    <span class="text-muted">Discount (10%)</span>
+                    <span class="text-success fw-semibold">- Rs. @Convert.ToDecimal(ViewBag.Discount ?? 0).ToString("N0")</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3 small">
+                    <span class="text-muted">Shipping</span>
+                    <span class="fw-semibold text-success">Free</span>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="fw-bold fs-5">Total</span>
+                    <span class="fw-bold fs-5">Rs. @Convert.ToDecimal(ViewBag.FinalTotal ?? 0).ToString("N0")</span>
+                </div>
+                <a asp-controller="Checkout" asp-action="Index" class="btn btn-dark w-100 rounded-3 fw-bold py-3"><i class="fa-solid fa-lock me-2"></i>Secure Checkout</a>
+                <p class="text-center text-muted mt-2" style="font-size:11px;"><i class="fa-solid fa-shield-halved me-1"></i> Secure payment - Cash on Delivery</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@model List<Ecommerce.Models.Order>
+@{
+    ViewData["Title"] = "My Orders";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<style>
+    .order-card{ border:0; box-shadow:0 10px 30px rgba(0,0,0,0.06); border-radius:18px; background:#fff; transition:.2s; }
+    .order-card:hover{ transform:translateY(-2px); box-shadow:0 14px 35px rgba(0,0,0,0.08); }
+    .status-pending{ background:#fff7e6; color:#b7791f; border:1px solid #fde68a; }
+    .status-shipped{ background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+    .status-delivered{ background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
+    @@media (max-width: 576px) {
+        .order-top { flex-direction: column !important; gap: 10px !important; }
+        .order-top .text-end { text-align: left !important; width: 100%; }
+        .order-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+        .order-bottom .btn { width: 100%; }
+    }
+</style>
+
+<div class="container py-4 py-lg-5" style="overflow-x:hidden;">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a asp-controller="Home" asp-action="Index" class="bg-white border rounded-circle d-inline-flex align-items-center justify-content-center text-decoration-none text-dark shadow-sm" style="width:36px;height:36px;"><i class="fa-solid fa-arrow-left" style="font-size:12px;"></i></a>
+        <h4 class="fw-bolder mb-0">My Orders <span class="text-muted fw-normal ms-1" style="font-size:14px;">(@Model.Count)</span></h4>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 order-card p-5">
+            <div class="mb-3"><i class="fa-solid fa-bag-shopping fa-2x text-muted opacity-25"></i></div>
+            <h5 class="fw-bold">You haven't placed any orders yet</h5>
+            <p class="text-muted small">When you place an order, it will appear here.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-dark rounded-3 px-4 mt-2 fw-bold">Start Shopping</a>
+        </div>
+    }
+    else
+    {
+        foreach (var order in Model)
+        {
+            var statusClass = order.Status == "Delivered" ? "status-delivered" : order.Status == "Shipped" ? "status-shipped" : "status-pending";
+            var statusIcon = order.Status == "Delivered" ? "fa-circle-check" : order.Status == "Shipped" ? "fa-truck-fast" : "fa-clock";
+
+            <div class="order-card p-3 p-md-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-3 order-top">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="fw-bolder" style="font-size:15px;">Order #@order.Id</span>
+                            <span class="badge rounded-pill @statusClass" style="font-size:10px; font-weight:700;"><i class="fa-solid @statusIcon me-1"></i>@order.Status</span>
+                        </div>
+                        <div class="text-muted small mt-1"><i class="fa-regular fa-calendar me-1"></i>@order.OrderDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bolder" style="font-size:15px;">Rs. @order.TotalAmount.ToString("N0")</div>
+                        <div class="text-muted" style="font-size:11px;">@order.PaymentMethod</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                    @foreach(var item in order.OrderItems)
+                    {
+                        var imgPath = item.Product!.Image ?? "";
+                        if (!imgPath.StartsWith("/") && !imgPath.StartsWith("http")) { imgPath = "/" + imgPath.TrimStart('~','/'); }
+                        <div class="position-relative">
+                            <img src="@Url.Content(imgPath)" title="@item.Product!.Name x @item.Quantity" style="width:52px;height:52px;object-fit:contain;background:#f6f7f9;border-radius:12px;padding:5px;border:1px solid #f0f0f0;" onerror="this.src='https://placehold.co/100x100?text=No+Image'" />
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" style="font-size:8px;">@item.Quantity</span>
+                        </div>
+                    }
+                    <span class="ms-2 small text-muted fw-semibold">@order.OrderItems.Sum(i => i.Quantity) items</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center border-top pt-3 order-bottom">
+                    <div class="small text-muted text-truncate" style="max-width:70%;"><i class="fa-solid fa-location-dot me-1"></i>@order.Address</div>
+                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-dark rounded-3 btn-sm px-3 fw-bold">View Details <i class="fa-solid fa-arrow-right ms-1" style="font-size:10px;"></i></a>
+                </div>
+            </div>
+        }
+    }
+</div>

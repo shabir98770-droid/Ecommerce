@@ -1,0 +1,99 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body { background: #f6f6f6 !important; }
+    .lux-card {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        max-width: 480px;
+        width: 100%;
+        padding: 48px 40px;
+        margin: 20px auto;
+    }
+    .lux-label {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+    .lux-input {
+        background: #f2f2f2;
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
+        padding: 16px 18px;
+        font-size: 15px;
+        width: 100%;
+    }
+    .lux-input:focus {
+        outline: none;
+        background: #fff;
+        border-color: #000;
+        box-shadow: none;
+    }
+    .lux-btn {
+        background: #0a0a0a;
+        color: white;
+        border-radius: 14px;
+        padding: 18px;
+        width: 100%;
+        font-size: 16px;
+        font-weight: 500;
+        border: none;
+        margin-top: 12px;
+    }
+    .lux-btn:hover { background: #000; color: white; }
+    .brand { font-family: serif; font-size: 22px; letter-spacing: -0.5px; }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:75vh;">
+    <div class="lux-card">
+        <div class="text-center mb-5">
+            <div class="brand mb-4">Ecommerce.</div>
+            <h2 class="fw-normal" style="font-size:28px;">Welcome back</h2>
+            <p class="text-muted small mt-2">Log in to continue shopping</p>
+        </div>
+
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3" role="alert"></div>
+
+            <div class="mb-4">
+                <div class="lux-label">Email</div>
+                <input asp-for="Input.Email" class="lux-input" placeholder="name@example.com" autocomplete="username" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-2">
+                <div class="d-flex justify-content-between">
+                    <div class="lux-label">Password</div>
+                    <a id="forgot-password" asp-page="./ForgotPassword" class="small text-muted text-decoration-none">Forgot?</a>
+                </div>
+                <input asp-for="Input.Password" class="lux-input" placeholder="••••••••" autocomplete="current-password" />
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check my-4">
+                <input class="form-check-input" asp-for="Input.RememberMe" style="border-radius:4px;" />
+                <label class="form-check-label small text-muted" asp-for="Input.RememberMe">
+                    Remember me
+                </label>
+            </div>
+
+            <button id="login-submit" type="submit" class="lux-btn">Log in</button>
+
+            <div class="text-center mt-4" style="font-size:14px;">
+                Don't have an account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-dark fw-bold" style="text-decoration:underline; text-underline-offset:4px;">Create account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

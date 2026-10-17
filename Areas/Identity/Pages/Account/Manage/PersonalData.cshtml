@@ -1,0 +1,56 @@
+@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="background:#f6f7f9; min-height:80vh; padding:40px 0;">
+<div class="container" style="max-width:800px;">
+    <a href="/Identity/Account/Manage" class="btn btn-outline-dark rounded-pill px-3 mb-4 small"><i class="bi bi-arrow-left"></i> Back to Profile</a>
+    
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="rounded-4 d-flex align-items-center justify-content-center" style="width:56px; height:56px; background:#111; color:#fff;"><i class="bi bi-shield-lock fs-4"></i></div>
+            <div>
+                <h4 class="fw-bolder mb-0" style="letter-spacing:-0.5px;">Personal Data</h4>
+                <small class="text-muted">Your data & privacy controls</small>
+            </div>
+        </div>
+
+        <div class="p-3 rounded-4 mb-4" style="background:#fffbe6; border:1px solid #ffe58f;">
+            <p class="small mb-0" style="line-height:1.7;">
+                <b>Your account contains personal data that you have given us.</b> This page allows you to download or delete that data.<br/>
+                <span class="text-danger fw-bold">Deleting this data will permanently remove your account, and this cannot be recovered.</span>
+            </p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="p-4 rounded-4 h-100" style="background:#f9fafb; border:1px solid #e5e7eb;">
+                    <h6 class="fw-bold"><i class="bi bi-download me-2"></i>Download Data</h6>
+                    <p class="small text-muted mb-3" style="line-height:1.6;">Download all your personal data as a JSON file. Includes your profile, orders history.</p>
+                    <form id="download-data" asp-page="DownloadPersonalData" method="post">
+                        <button class="btn btn-dark w-100 rounded-4 py-2 fw-bold small" type="submit"><i class="bi bi-cloud-arrow-down me-1"></i> Download My Data</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 rounded-4 h-100" style="background:#fff5f5; border:1px solid #fecaca;">
+                    <h6 class="fw-bold text-danger"><i class="bi bi-trash me-2"></i>Delete Account</h6>
+                    <p class="small text-muted mb-3" style="line-height:1.6;">Permanently delete your account and all data. This action cannot be undone.</p>
+                    <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger w-100 rounded-4 py-2 fw-bold small">Delete Account</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <small class="text-muted" style="font-size:11px;">© 2026 ECOMMERCE — Secure • Encrypted • Private</small>
+        </div>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

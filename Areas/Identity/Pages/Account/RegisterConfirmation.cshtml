@@ -1,0 +1,94 @@
+@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Check your email";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body { background: #f6f6f6 !important; }
+    .lux-card {
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        max-width: 480px;
+        width: 100%;
+        padding: 48px 40px;
+        margin: 20px auto;
+        text-align: center;
+    }
+    .icon-circle {
+        width: 72px;
+        height: 72px;
+        background: #000;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 28px;
+    }
+    .lux-btn {
+        background: #0a0a0a;
+        color: white;
+        border-radius: 14px;
+        padding: 16px 24px;
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        width: 100%;
+        display: block;
+        text-decoration: none;
+    }
+    .lux-btn-light {
+        background: #f2f2f2;
+        color: #000;
+        border-radius: 14px;
+        padding: 14px;
+        font-size: 13px;
+        border: 1px solid #e5e5e5;
+        word-break: break-all;
+        display: block;
+        text-decoration: none;
+    }
+    .brand { font-family: serif; font-size: 22px; }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:75vh;">
+    <div class="lux-card">
+        <div class="brand mb-4">Ecommerce.</div>
+        
+        <div class="icon-circle">✉️</div>
+        <h2 class="fw-normal" style="font-size:26px;">Check your email</h2>
+
+        @{
+            if (@Model.DisplayConfirmAccountLink)
+            {
+                <p class="text-muted small mt-3" style="line-height:1.6;">
+                    We haven't set up email sender yet (development mode). <br/>
+                    Click the link below to confirm your account directly:
+                </p>
+
+                <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="lux-btn mt-4 mb-3">Confirm my account</a>
+
+                <div class="text-start mt-4">
+                    <p class="small text-muted" style="font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:600;">Or copy link:</p>
+                    <div class="lux-btn-light small">@Model.EmailConfirmationUrl</div>
+                </div>
+
+                <p class="text-muted mt-4" style="font-size:11px;">
+                    See <a href="https://aka.ms/aspaccountconf" target="_blank" class="text-dark">docs</a> to configure real email sender for production
+                </p>
+            }
+            else
+            {
+                <p class="text-muted small mt-3" style="line-height:1.6;">
+                    We've sent a confirmation link to your email address.<br/>
+                    Please check your inbox and spam folder.
+                </p>
+                <a href="/" class="lux-btn mt-4">Back to home</a>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,149 @@
+﻿@using Ecommerce.ViewModels
+@using Ecommerce.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+    var currentCategory = ViewBag.CurrentCategory as string;
+    var searchTerm = ViewBag.SearchTerm as string;
+}
+
+<style>
+    .product-card-pro{
+        background:#fff; border-radius:22px; border:1px solid #ececec;
+        overflow:hidden; transition: all 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+        height:100%;
+    }
+    .product-card-pro:hover{
+        transform: translateY(-12px);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.18);
+        border-color:#111;
+    }
+    .product-img-wrap{
+        background: linear-gradient(180deg,#fafafa 0%, #f3f4f6 100%);
+        height: 280px; display:flex; align-items:center; justify-content:center;
+        padding:20px; position:relative; overflow:hidden;
+    }
+    .product-img-wrap img{
+        max-height:92%; max-width:92%; object-fit:contain;
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+    }
+    .product-card-pro:hover .product-img-wrap img{
+        transform: scale(1.18) rotate(1.5deg);
+    }
+    .product-img-wrap::after{
+        content:''; position:absolute; top:-50%; left:-50%;
+        width:200%; height:200%;
+        background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,0.7) 50%, transparent 60%);
+        transform: translateX(-100%) rotate(15deg); transition: transform 0.9s;
+    }
+    .product-card-pro:hover .product-img-wrap::after{
+        transform: translateX(100%) rotate(15deg);
+    }
+    .premium-search{background:#fff; border-radius:16px; border:1px solid #e5e7eb; box-shadow:0 4px 20px rgba(0,0,0,0.04);}
+    
+    /* RESPONSIVE FIX */
+    @@media (max-width: 768px) {
+        .product-img-wrap{height: 200px !important; padding:12px !important;}
+        .card-body{padding:14px !important;}
+        .card-body h6{font-size:13px !important;}
+        .card-body .fs-5{font-size:15px !important;}
+        .card-footer .btn{font-size:13px; padding:7px !important;}
+    }
+    @@media (max-width: 576px) {
+        .product-img-wrap{height: 170px !important;}
+        .row-cols-2 > *{padding-left:6px; padding-right:6px;}
+        .row-cols-2{--bs-gutter-x:12px;}
+        .premium-search{border-radius:12px;}
+    }
+</style>
+
+<section class="py-3 py-lg-4" style="overflow-x:hidden;">
+    <div class="container px-3 px-lg-5">
+        <div class="row justify-content-center mb-3 mb-lg-4">
+            <div class="col-lg-7 col-12">
+                <form asp-controller="Home" asp-action="Index" method="get">
+                    <div class="input-group premium-search p-2">
+                        <span class="input-group-text bg-transparent border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" value="@searchTerm" class="form-control bg-transparent border-0 shadow-none" placeholder="Search iPhone, Samsung, Vivo..." />
+                        <input type="hidden" name="category" value="@currentCategory" />
+                        <button type="submit" class="btn btn-dark rounded-pill px-4 fw-semibold">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (!Model.Products.Any())
+        {
+            <div class="text-center py-5">
+                <div class="mb-4"><i class="bi bi-search" style="font-size: 64px; color: #e5e5e5;"></i></div>
+                <h3 class="fw-bolder">@(ViewBag.NoResultMessage ?? "No products found!")</h3>
+                <p class="text-muted small">Try different keywords like iPhone, Samsung</p>
+                <a asp-action="Index" class="btn btn-dark rounded-pill px-5 py-2 mt-2 fw-semibold">Back to All Products</a>
+            </div>
+        }
+        else
+        {
+            <div class="row gx-3 gx-lg-4 row-cols-2 row-cols-md-3 row-cols-xl-4">
+                @foreach (var product in Model.Products)
+                {
+                    var imgPath = product.Image ?? "";
+                    if (!imgPath.StartsWith("/") && !imgPath.StartsWith("http"))
+                    {
+                        imgPath = "/" + imgPath.TrimStart('~','/');
+                    }
+
+                    <div class="col mb-3 mb-lg-4">
+                        <div class="card h-100 shadow-sm border-0 product-card-pro overflow-hidden">
+                            <div class="position-relative product-img-wrap">
+                                <img class="card-img-top p-2 p-lg-3" 
+                                     src="@Url.Content(imgPath)" 
+                                     alt="@product.Name" 
+                                     style="object-fit: contain; width:100%; height:100%;" 
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/f3f4f6/111?text=@product.Name'" />
+                                <div class="badge bg-white text-dark position-absolute shadow-sm rounded-pill border" style="top: 0.6rem; right: 0.6rem; font-size: 10px; padding: 5px 10px;">@product.Category</div>
+                            </div>
+                            <div class="card-body p-3 p-lg-4 pb-2">
+                                <h6 class="fw-bolder mb-1 text-truncate" title="@product.Name" style="font-size: 15px;">@product.Name</h6>
+                                <span class="text-muted small" style="font-size:11px;">@product.Category</span>
+                                <span class="fw-bold fs-5 mt-2 d-block">Rs. @product.Price.ToString("N0")</span>
+                            </div>
+                            <div class="card-footer p-2 p-lg-3 pt-0 border-top-0 bg-transparent">
+                                <div class="d-grid gap-2">
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" class="btn btn-dark rounded-pill fw-semibold py-2">Add to Cart</a>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-dark rounded-pill fw-semibold py-2" data-bs-toggle="modal" data-bs-target="#loginModal-@product.Id">Add to Cart</button>
+                                    }
+                                    <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-light border-0 w-100 rounded-pill fw-semibold" style="background:#f5f5f7;">View options</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="loginModal-@product.Id" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                            <div class="modal-content border-0 shadow-lg" style="border-radius:22px;">
+                                <div class="modal-body p-4 text-center">
+                                    <h5 class="fw-bolder">Login Required</h5>
+                                    <p class="text-muted small mt-2">You need to login to add items to your cart.</p>
+                                    <div class="d-grid gap-2 mt-4">
+                                        <a href="/Identity/Account/Login?returnUrl=@Context.Request.Path" class="btn btn-dark rounded-pill py-2 fw-semibold">Login</a>
+                                        <a href="/Identity/Account/Register" class="btn btn-light rounded-pill py-2 fw-semibold" style="background:#f5f5f7;">Create Account</a>
+                                        <button type="button" class="btn btn-link text-muted text-decoration-none small" data-bs-dismiss="modal">Maybe later</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,272 @@
+﻿@{
+    var catQuery = Context.Request.Query["category"].ToString()?.ToLower() ?? "";
+    var searchQuery = Context.Request.Query["search"].ToString();
+
+    string bannerTitle = "Shop In Style";
+    string bannerSub = "Top Brands • Best Prices • Fast Delivery — Built for you";
+    string bannerBadge = "✨ Premium • 2026 Collection";
+
+    if (catQuery == "mobile" || catQuery == "mobiles")
+    {
+        bannerTitle = "Mobiles";
+        bannerSub = "iPhone • Samsung • Vivo • Infinix • Best Mobile Deals";
+        bannerBadge = "📱 Mobile Collection";
+    }
+    else if (catQuery == "laptop" || catQuery == "laptops")
+    {
+        bannerTitle = "Laptops";
+        bannerSub = "Gaming • Business • Student • High Performance Laptops";
+        bannerBadge = "💻 Laptop Collection";
+    }
+    else if (!string.IsNullOrEmpty(searchQuery))
+    {
+        bannerTitle = searchQuery;
+        bannerSub = $"Results for \"{searchQuery}\"";
+        bannerBadge = "🔍 Search Results";
+    }
+    var path = Context.Request.Path.Value?.ToLower() ?? "";
+    bool showBanner = path == "/" || path.Contains("/home") || !string.IsNullOrEmpty(catQuery) || !string.IsNullOrEmpty(searchQuery);
+    bool isAll = string.IsNullOrEmpty(catQuery);
+    bool isMobile = catQuery == "mobile" || catQuery == "mobiles";
+    bool isLaptop = catQuery == "laptop" || catQuery == "laptops";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>@ViewData["Title"] - Ecommerce</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+            html, body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+
+            body {
+                font-family: 'Outfit',sans-serif;
+                background: #f6f7f9;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            main {
+                flex: 1;
+                overflow-x: hidden;
+            }
+
+            .banner-pro {
+                position: relative;
+                overflow: hidden;
+                padding: 78px 0 88px 0;
+                background: #08080a;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+            }
+
+                .banner-pro::before {
+                    content: '';
+                    position: absolute;
+                    inset: -40%;
+                    background: radial-gradient(550px at 15% 20%, #6366f1 0%, transparent 60%), radial-gradient(600px at 85% 75%, #ec4899 0%, transparent 60%), radial-gradient(400px at 50% 0%, #22d3ee 0%, transparent 50%);
+                    filter: blur(18px);
+                    opacity: 0.9;
+                }
+
+            .banner-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            @@keyframes slideUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .anim-up {
+                animation: slideUp 0.7s forwards;
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            .anim-up-2 {
+                animation: slideUp 0.7s 0.3s forwards;
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            .shop-title {
+                font-size: clamp(36px, 7vw, 84px);
+                font-weight: 900;
+                letter-spacing: -3px;
+                line-height: 0.9;
+                background: linear-gradient(90deg,#fff 10%,#a5b4fc 50%,#f0abfc 90%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                word-break: break-word;
+            }
+
+            .filter-wrapper {
+                display: flex;
+                justify-content: center;
+                margin-top: -28px;
+                position: relative;
+                z-index: 3;
+                padding: 0 15px;
+            }
+
+            .filter-tabs {
+                background: #fff;
+                border: 1px solid #e8e8e8;
+                border-radius: 999px;
+                padding: 5px;
+                display: inline-flex;
+                gap: 4px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+                max-width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+                .filter-tabs::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .filter-tabs a {
+                    padding: 9px 22px;
+                    border-radius: 999px;
+                    font-size: 13.5px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    color: #6b7280;
+                    transition: all 0.22s ease;
+                    flex-shrink: 0;
+                }
+
+                    .filter-tabs a:hover {
+                        color: #111;
+                    }
+
+                    .filter-tabs a.active {
+                        background: #111;
+                        color: #fff;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    }
+
+            footer a:hover {
+                color: #fff !important;
+            }
+
+            @@media (max-width: 768px) {
+                .banner-pro {
+                    padding: 40px 0 60px 0;
+                }
+
+                .shop-title {
+                    letter-spacing: -1px;
+                }
+
+                .container {
+                    padding-left: 16px !important;
+                    padding-right: 16px !important;
+                }
+            }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand fw-bolder" href="/" style="letter-spacing:-1px;">ECOMMERCE.</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto ms-lg-4 gap-1">
+                    <li class="nav-item"><a class="nav-link fw-semibold small" href="/">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold small" href="/Orders">MY ORDERS</a></li>
+
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+    <a class="nav-link fw-semibold small text-dark px-3" asp-area="Dashboard" asp-controller="Home" asp-action="Index">DASHBOARD</a>
+</li>
+                    }
+                </ul>
+                <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                    <a href="/Cart" class="btn btn-dark rounded-pill px-4 fw-bold small"><i class="bi bi-bag me-1"></i> CART</a>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    @if (showBanner)
+    {
+        <header class="banner-pro text-center text-white">
+            <div class="container banner-content px-4">
+                <div class="anim-up d-inline-block px-3 py-2 rounded-pill mb-3" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); font-size:11px; letter-spacing:0.6px; text-transform:uppercase;">
+                    @bannerBadge
+                </div>
+                <h1 class="shop-title">@bannerTitle</h1>
+                <p class="anim-up-2 text-white-50 mt-3 fs-6">@bannerSub</p>
+            </div>
+        </header>
+        <div class="filter-wrapper">
+            <div class="filter-tabs">
+                <a href="/" class="@(isAll ? "active" : "")">All Products</a>
+                <a href="/?category=Mobile" class="@(isMobile ? "active" : "")">Mobiles</a>
+                <a href="/?category=Laptop" class="@(isLaptop ? "active" : "")">Laptops</a>
+            </div>
+        </div>
+    }
+
+    <main class="mt-4">@RenderBody()</main>
+
+    <footer class="bg-black text-light pt-5 pb-4 mt-5">
+        <div class="container px-4 px-lg-5">
+            <div class="row">
+                <div class="col-lg-5 mb-4">
+                    <h5 class="fw-bolder" style="letter-spacing:-0.5px;">ECOMMERCE.</h5>
+                    <p class="text-white-50 small mt-3" style="line-height:1.8; max-width:380px;">Premium curated store. Best mobiles & laptops with flat 10% discount.</p>
+                </div>
+                <div class="col-lg-2 col-6 mb-4">
+                    <h6 class="fw-bold small text-uppercase mb-3" style="font-size:11px; opacity:0.6;">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/" class="text-white-50 text-decoration-none">All Products</a></li>
+                        <li class="mb-2"><a href="/?category=Mobile" class="text-white-50 text-decoration-none">Mobiles</a></li>
+                        <li class="mb-2"><a href="/?category=Laptop" class="text-white-50 text-decoration-none">Laptops</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-6 mb-4">
+                    <h6 class="fw-bold small text-uppercase mb-3" style="font-size:11px; opacity:0.6;">Support</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/Cart" class="text-white-50 text-decoration-none">Cart</a></li>
+                        <li class="mb-2"><a href="/Orders" class="text-white-50 text-decoration-none">My Orders</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6 class="fw-bold small text-uppercase mb-3" style="font-size:11px; opacity:0.6;">Contact</h6>
+                    <p class="small text-white-50 mb-1">0305-1855322 • 9AM - 9PM</p>
+                    <p class="small text-white-50">support@ecommerce.pk</p>
+                    <p class="small text-white-50">Islamabad, Pakistan</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" style="opacity:0.15;" />
+            <div class="d-flex flex-column flex-md-row justify-content-between small" style="color:rgba(255,255,255,0.4); font-size:12px;">
+                <span>© 2026 ECOMMERCE — Premium Store</span>
+                <span>FYP Final Project</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

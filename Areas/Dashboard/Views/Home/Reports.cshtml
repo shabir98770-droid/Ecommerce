@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Reports & Analytics</h1>
+    <div class="row">
+        <div class="col-md-4"><div class="card border-left-primary shadow p-3"><h6>Total Sales</h6><h4>Rs. @ViewBag.TotalSales</h4></div></div>
+        <div class="col-md-4"><div class="card border-left-success shadow p-3"><h6>Total Orders</h6><h4>@ViewBag.TotalOrders</h4></div></div>
+        <div class="col-md-4"><div class="card border-left-info shadow p-3"><h6>Total Products</h6><h4>@ViewBag.TotalProducts</h4></div></div>
+    </div>
+    <div class="card shadow mt-4">
+        <div class="card-body text-center py-4">
+            <i class="fas fa-chart-area fa-3x text-gray-300 mb-3"></i>
+           
+        </div>
+    </div>
+</div>

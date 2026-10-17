@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Ecommerce.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark fw-bold d-flex align-items-center gap-2 px-3 py-2 rounded-pill" href="/Identity/Account/Manage" style="background:#f5f5f7;">
+                <i class="bi bi-person-circle"></i> 
+                <span class="d-inline">@User.Identity?.Name?.Split('@')[0]</span>
+                <i class="bi bi-gear ms-1" style="font-size:14px;"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-muted small w-100 text-start text-lg-center px-3">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark fw-semibold small px-3" href="/Identity/Account/Register">REGISTER</a>
+        </li>
+      <li class="nav-item">
+    <a class="nav-link text-dark fw-semibold small px-3" asp-area="Identity" asp-page="/Account/Login">LOGIN</a>
+</li>
+    }
+</ul>

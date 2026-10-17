@@ -1,0 +1,19 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center border p-4 shadow-sm rounded bg-white">
+            <h2>Log out</h2>
+            <h5 class="text-muted mt-3">Are you sure you want to log out?</h5>
+            
+            <form class="mt-4" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
+                <button type="submit" class="btn btn-danger px-4 me-2">Yes, Logout</button>
+                <a href="/" class="btn btn-secondary px-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

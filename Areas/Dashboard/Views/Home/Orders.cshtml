@@ -1,0 +1,41 @@
+﻿@model List<Ecommerce.Models.Order>
+
+<div class="container-fluid mt-4">
+    <h3>All Orders</h3>
+    <div class="card shadow mt-3">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <td>#@o.Id</td>
+                            <td>@o.CustomerName</td>
+                            <td>@o.Phone</td>
+                            <td>Rs. @o.TotalAmount.ToString("N0")</td>
+                            <td>@o.PaymentMethod</td>
+                            <td>@o.OrderDate.ToString("dd MMM yyyy")</td>
+                            <td><span class="badge badge-warning">@o.Status</span></td>
+                            <td><a href="/Dashboard/Home/OrderDetails/@o.Id" class="btn btn-sm btn-primary">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if(!Model.Any()){
+                <p class="text-center text-danger">Abhi koi order nahi hai</p>
+            }
+        </div>
+    </div>
+</div>

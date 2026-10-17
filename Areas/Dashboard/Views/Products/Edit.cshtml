@@ -1,0 +1,98 @@
+﻿@model Ecommerce.Models.Product
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
+        <a asp-area="Dashboard" asp-controller="Products" asp-action="Index" class="small text-primary text-decoration-none">← Back to List</a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="m-0 font-weight-bold text-primary">Update Product</h6>
+                        <small class="text-muted">Editing #@Model.Id - @Model.Name</small>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning rounded-pill px-3">EDIT MODE</span>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" asp-area="Dashboard" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Name" class="form-label fw-semibold small text-uppercase text-muted"></label>
+                                    <input asp-for="Name" class="form-control rounded-3 py-2" />
+                                    <span asp-validation-for="Name" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label asp-for="Description" class="form-label fw-semibold small text-uppercase text-muted"></label>
+                                    <textarea asp-for="Description" class="form-control rounded-3" rows="3"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label asp-for="Price" class="form-label fw-semibold small text-uppercase text-muted"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text rounded-start-3">Rs.</span>
+                                        <input asp-for="Price" class="form-control rounded-end-3" />
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-uppercase text-muted w-100">Image</label>
+
+                                <div class="card border-0 bg-light rounded-4 p-3 text-center mb-3">
+                                    <small class="text-muted fw-bold mb-2" style="font-size:11px;">CURRENT IMAGE</small>
+                                    @if (!string.IsNullOrEmpty(Model.Image))
+                                    {
+                                        <img id="currentImg" src="@Model.Image" class="rounded-3 shadow-sm w-100" style="height:160px; object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div id="currentImg" class="py-4 text-muted">No Image</div>
+                                    }
+                                    <img id="preview" src="#" style="display:none; width:100%; height:160px; object-fit:cover; border-radius:12px; margin-top:10px;" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label small fw-semibold">Change Image (Optional)</label>
+                                    <input type="file" name="ImageFile" id="ImageFile" class="form-control rounded-3" accept="image/*" onchange="previewImage(event)" />
+                                    <small class="text-muted" style="font-size:11px;">Leave empty to keep old image</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary rounded-3 px-5 py-2 fw-bold shadow-sm">Save Changes</button>
+                            <a asp-action="Index" class="btn btn-light border rounded-3 px-4 py-2 fw-semibold">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function previewImage(event) {
+            var preview = document.getElementById('preview');
+            var current = document.getElementById('currentImg');
+            preview.style.display = 'block';
+            if(current.tagName == 'IMG') current.style.opacity = '0.4';
+            preview.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+}

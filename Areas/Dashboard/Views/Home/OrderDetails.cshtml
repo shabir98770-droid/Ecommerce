@@ -1,0 +1,60 @@
+﻿@model Ecommerce.Models.Order
+<div class="container-fluid mt-4">
+    <a href="/Dashboard/Home/Orders" class="btn btn-secondary btn-sm mb-3">← Back to All Orders</a>
+    <h3>Order #@Model.Id Details</h3>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Customer Info</strong></div>
+                <div class="card-body">
+                    <p><b>Name:</b> @Model.CustomerName</p>
+                    <p><b>Phone:</b> @Model.Phone</p>
+                    <p><b>Address:</b> @Model.Address</p>
+                    <p><b>UserId:</b> @Model.UserId</p>
+                    <p><b>Date:</b> @Model.OrderDate.ToString("dd MMM yyyy hh:mm tt")</p>
+                    <p><b>Total:</b> Rs. @Model.TotalAmount.ToString("N0")</p>
+                    <p><b>Payment:</b> @Model.PaymentMethod</p>
+                    <p><b>Status:</b> @Model.Status</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Update Status</strong></div>
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <select name="status" class="form-control mb-2">
+                            <option value="Pending" selected="@(Model.Status=="Pending")">Pending</option>
+                            <option value="Confirmed" selected="@(Model.Status=="Confirmed")">Confirmed</option>
+                            <option value="Shipped" selected="@(Model.Status=="Shipped")">Shipped</option>
+                            <option value="Delivered" selected="@(Model.Status=="Delivered")">Delivered</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header"><strong>Products in this Order</strong></div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+                <tbody>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td>@item.Product?.Name</td>
+                            <td>Rs. @item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>Rs. @(item.Price * item.Quantity)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

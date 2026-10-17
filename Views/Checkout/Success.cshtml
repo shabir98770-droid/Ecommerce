@@ -1,0 +1,35 @@
+﻿@model Ecommerce.Models.Order
+@{
+    ViewData["Title"] = "Order Success";
+}
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-sm rounded-4 p-5 mx-auto" style="max-width:600px;">
+        <div class="mb-3">
+            <span style="font-size:60px; color:green;">✔</span>
+        </div>
+        <h2 class="fw-bold">Order Placed!</h2>
+        <p class="text-muted">Order ID: <b>#@Model.Id</b> - Thank you for shopping.</p>
+        <p class="small">Payment: <b>@Model.PaymentMethod</b> | Status: <b>@Model.Status</b><br/>Total: <b>Rs. @Model.TotalAmount.ToString("N0")</b></p>
+
+
+        @if(ViewBag.EmailSent != null)
+        {
+            <div class="alert alert-success rounded-3 mt-3 text-start" style="font-size:13px;">
+                <b>✉️ @ViewBag.EmailSent</b><br/>
+                <span class="text-muted small">(Check Output window for EmailService log)</span>
+            </div>
+        }
+
+        <div class="d-grid gap-2 mt-4">
+
+            <a href="/Checkout/Invoice/@Model.Id" class="btn btn-dark py-3 rounded-3 fw-bold">
+                📄 Download Bill PDF
+            </a>
+            <div class="d-flex gap-2 justify-content-center mt-2">
+
+              <a href="/Orders" class="btn btn-outline-dark px-4 rounded-3">My Orders</a>
+              <a href="/" class="btn btn-outline-secondary px-4 rounded-3">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
