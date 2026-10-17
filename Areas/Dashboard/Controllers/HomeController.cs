@@ -1,12 +1,12 @@
 ﻿using Ecommerce.Data;
-using Microsoft.AspNetCore.Authorization; // 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
-    [Authorize(Roles = "Admin")] 
+    [Authorize] // <-- FIX: Ab User + Admin dono allowed, Guest not allowed
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

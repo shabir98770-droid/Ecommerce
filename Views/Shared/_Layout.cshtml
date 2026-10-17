@@ -189,12 +189,11 @@
                     <li class="nav-item"><a class="nav-link fw-semibold small" href="/">HOME</a></li>
                     <li class="nav-item"><a class="nav-link fw-semibold small" href="/Orders">MY ORDERS</a></li>
 
-                    
-                    @if (User.IsInRole("Admin"))
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-    <a class="nav-link fw-semibold small text-dark px-3" asp-area="Dashboard" asp-controller="Home" asp-action="Index">DASHBOARD</a>
-</li>
+                            <a class="nav-link fw-semibold small text-dark px-3" asp-area="Dashboard" asp-controller="Home" asp-action="Index">DASHBOARD</a>
+                        </li>
                     }
                 </ul>
                 <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
